@@ -1,0 +1,38 @@
+---
+- name: Webserver role - Apache setup
+  debug:
+    msg: "Starting Apache role execution"
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Install Apache
+  apt:
+    name: apache2
+    state: present
+
+#------ "service" is for systems that run systemd(docker does not by default) -------
+     
+- name: Ensure Apache is running with systemd
+  service:
+    name: apache2
+    state: started
+    enabled: true
+  when: not (is_container | default(false) | bool)
+
+#------ For Containers --------
+- name: Check if Apache is running (container-safe)
+  command: pgrep apache2
+  register: apache_status
+  failed_when: false
+  changed_when: false
+  when: is_container | default(false) | bool
+  
+- name: Start Apache in container
+  command: /etc/init.d/apache2 start
+  register: apache_start
+  changed_when: apache_status.rc != 0
+  when:
+    - is_container | default(false) | bool
+    - apache_status.rc != 0
