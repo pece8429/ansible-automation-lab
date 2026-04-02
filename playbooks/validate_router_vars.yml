@@ -1,0 +1,43 @@
+---
+- name: Validate router input variables
+  hosts: routers
+  gather_facts: no
+  tasks:
+    - name: Ensure hostname is defined
+      assert:
+        that:
+          - hostname is defined
+          - hostname | length > 0
+        fail_msg: "hostname is missing for {{ inventory_hostname }}"
+        success_msg: "hostname is defined for {{ inventory_hostname }}"
+      
+    - name: Ensure loopback IP is defined
+      assert:
+        that:
+          - loopback_ip is defined
+          - loopback_ip | length > 0
+        fail_msg: "loopback_ip is missing for {{ inventory_hostname }}"
+        success_msg: "loopback_ip is defined for {{ inventory_hostname }}"
+
+    - name: Ensure interfaces list exists 
+      assert:
+        that:
+          - interfaces is defined
+          - interfaces | length > 0
+        fail_msg: "interfaces is missing for {{ inventory_hostname }}"
+        success_msg: "interfaces exists for {{ inventory_hostname }}"
+   
+    - name: Ensure OSPF process is defined
+      assert:
+        that:
+          - ospf_process is defined
+        fail_msg: "ospf_process is missing or empty for {{ inventory_hostname }}"
+        success_msg: "ospf_process is defined for {{ inventory_hostname }}"
+        
+    - name: Ensure OSPF network exist
+      assert:
+        that:
+          - ospf_networks is defined
+          - ospf_networks | length > 0
+        fail_msg: "ospf_networks is missing or empty for {{ inventory_hostname }}"
+        success_msg: "ospf_networks exists for {{ inventory_hostname }}"

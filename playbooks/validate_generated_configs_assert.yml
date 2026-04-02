@@ -1,0 +1,35 @@
+---
+- name: Validate generated router config contents
+  hosts: routers
+  gather_facts: no
+  tasks:
+    - name: Read generated config file
+      slurp:
+        src: "{{ playbook_dir }}/../configs/{{ inventory_hostname }}.conf"
+      delegate_to: localhost
+      register: config_file
+    
+    - name: Decide config content into plain text
+      set_fact:
+        rendered_config: "{{ config_file.content | b64decode }}"
+    
+    - name: Ensure hostname line exists in generated config
+      assert:
+        that:
+          - "'hostname ' ~ hostname in rendered_config"
+        fail_msg: "Generated config for {{ inventory_hostname }} is missing hostname line"
+        success_msg: "Generated config for {{ inventory_hostname }} contains hostname line"
+    
+    - name: Ensure Loopback0 exists in generated config
+      assert:
+        that:
+          - "'interface Loopback0' in rendered_config"
+        fail_msg: "Generated config for {{ inventory_hostname }} is missing Loopback0"
+        success_msg: "Generated config for {{ inventory_hostname }} contains Loopback0"
+        
+    - name: Ensure OSPF section exists in generated config
+      assert:
+        that:
+          - "'router ospf '~ (ospf_process | string) in rendered_config"
+        fail_msg: "Generated config for {{ inventory_hostname }} is missing OSPF section"
+        success_msg: "Generated config for {{ inventory_hostname }} contains OSPF section"

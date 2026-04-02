@@ -1,0 +1,18 @@
+---
+- name: Back up generated configs
+  hosts: routers
+  gather_facts: no
+  tasks:
+    - name: Ensure backups directory exists
+      file:
+        path: "{{ playbook_dir }}/../backups"
+        state: directory
+        mode: '0755'
+      delegate_to: localhost
+      run_once: true
+
+    - name: Copy generated config to backup folder
+      copy:
+        src: "{{ playbook_dir }}/../configs/{{ inventory_hostname }}.conf"
+        dest: "{{ playbook_dir }}/../backups/{{ inventory_hostname }}.conf.bak"
+      delegate_to: localhost

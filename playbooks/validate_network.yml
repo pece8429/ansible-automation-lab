@@ -1,0 +1,20 @@
+---
+- name: Validate generated router configs
+  hosts: routers
+  gather_facts: no
+  tasks:
+    - name: Check hostname exists in config
+      command: grep "^hostname " "{{ playbook_dir }}/../configs/{{ inventory_hostname }}.conf"
+      delegate_to: localhost
+      changed_when: false
+    
+    - name: Check Loopback0 exists in config
+      command: grep "^interface Loopback0" "{{ playbook_dir }}/../configs/{{ inventory_hostname }}.conf"
+      delegate_to: localhost
+      changed_when: false
+      
+    - name: Check OSPF section exists in config
+      command: grep "^router ospf " "{{ playbook_dir }}/../configs/{{ inventory_hostname }}.conf"
+      delegate_to: localhost
+      changed_when: false
+      

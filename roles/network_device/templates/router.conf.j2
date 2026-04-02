@@ -1,0 +1,17 @@
+hostname {{ hostname }}
+
+interface Loopback0
+ ip address {{ loopback_ip }}
+ 
+{% for intf in interfaces %}
+interface {{ intf.name }}
+ description {{ intf.description }}
+ ip address {{ intf.ip }}
+ no shutdown
+ 
+{% endfor %}
+ 
+router ospf {{ ospf_process }}
+{% for network in ospf_networks %}
+ network {{ network }}
+{% endfor %}
