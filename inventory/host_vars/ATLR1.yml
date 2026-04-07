@@ -9,7 +9,6 @@ interfaces:
     description: LAN segment
     ip: 10.10.10.1/24
     
-ospf_process: 1
 ospf_networks:
    - 10.0.0.1 0.0.0.0 area 0
    - 192.168.10.0 0.0.0255 area 0

@@ -1,0 +1,6 @@
+Device: ATLR1
+Config File: /home/rafa/ansible-lab/playbooks/../configs/ATLR1.conf
+Change Found: no
+Change ID: none 
+Incident Status: INVESTIGATE 
+Action: Flag incident for investigation 

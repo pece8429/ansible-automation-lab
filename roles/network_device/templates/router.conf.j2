@@ -1,5 +1,9 @@
 hostname {{ hostname }}
 
+banner motd ^
+{{ common_banner }}
+^
+
 interface Loopback0
  ip address {{ loopback_ip }}
  

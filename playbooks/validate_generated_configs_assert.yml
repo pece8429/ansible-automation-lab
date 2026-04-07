@@ -9,7 +9,7 @@
       delegate_to: localhost
       register: config_file
     
-    - name: Decide config content into plain text
+    - name: Decode config content into plain text
       set_fact:
         rendered_config: "{{ config_file.content | b64decode }}"
     

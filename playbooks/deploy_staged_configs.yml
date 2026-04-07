@@ -1,0 +1,29 @@
+---
+- name: Stage router configs for deployment
+  hosts: routers
+  gather_facts: no
+  tasks:
+    - name: Ensure staged directory exists
+      file:
+        path: "{{ playbook_dir }}/../staged"
+        state: directory
+        mode: '0755'
+      delegate_to: localhost
+      run_once: true
+      
+    - name: Check if config file exists
+      stat:
+        path: "{{ playbook_dir }}/../configs/{{ inventory_hostname }}.conf"
+      register: config_file
+      delegate_to: localhost
+    
+    - name: Fail if config file is missing
+      fail:
+        msg: "Config file missing for {{ inventory_hostname }}.conf"
+      when: not config_file.stat.exists
+      
+    - name: Copy validated config to staging area
+      copy:
+        src: "{{ playbook_dir }}/../configs/{{ inventory_hostname }}.conf"
+        dest: "{{ playbook_dir }}/../staged/{{ inventory_hostname }}.conf"
+      delegate_to: localhost

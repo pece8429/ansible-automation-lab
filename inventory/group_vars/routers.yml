@@ -1,0 +1,6 @@
+ospf_process: 1
+
+common_banner: |
+  There's nothing like me except me.
+  If you are not me, LEAVE.
+  Configuration managed through automation.
