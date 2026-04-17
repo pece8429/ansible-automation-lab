@@ -1,0 +1,11 @@
+{
+    "change_number": "CHG0001234",
+    "ci_name": "router-atl-01",
+    "event_id": "EVT10011",
+    "forwarded_from": "Ansible lab Correlation Workflow",
+    "hostname": "ATLR1",
+    "incident_id": "INC20011",
+    "message": "Configuration change correlated with approved change CHG0001234",
+    "site": "ATL",
+    "status": "NORMAL"
+}

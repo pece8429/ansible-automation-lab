@@ -22,41 +22,78 @@
         msg: "Generated config missing for {{ inventory_hostname }}"
       when: not config_file.stat.exists
 
-    - name: Simulate change lookup via API
-      uri:
-        url: "https://jsonplaceholder.typicode.com/todos/1"
-        method: GET
-        return_content: yes
-      register: change_api_response
+    - name: Load mock ServiceNow change response
+      slurp:
+        src: "{{ playbook_dir }}/../mock_api/servicenow_changes.json"
       delegate_to: localhost
-
-    - name: Set simulated change status
+      register: snow_mock_raw
+      
+    - name: Parse mock ServiceNow JSON
       set_fact:
-        change_found: "{{ change_api_response.json.completed | default(false) }}"
-        change_id: "CHG001001"
-
-    - name: write enrichment report when change is found
+        snow_mock: "{{ snow_mock_raw.content | b64decode | from_json }}"
+        
+    - name: Find matching active change for this CI
+      set_fact:
+        matching_changes: >-
+          {{
+            snow_mock.result
+            | selectattr('cmdb_ci.display_value', 'equalto', ci_name)
+            | selectattr('active', 'equalto', 'true')
+            | list
+          }}
+    
+    - name: Set change correlation facts
+      set_fact:
+        change_found: "{{ matching_changes | length > 0 }}"
+        matched_change_number: "{{ matching_changes[0].number if (matching_changes | length > 0) else '' }}"
+        matched_change_state: "{{ matching_changes[0].state if (matching_changes | length > 0) else '' }}"
+        matched_assignment_group: "{{ (matching_changes[0].assignment_group | default({})).display_value | default('') if (matching_changes | length > 0) else '' }}"
+        
+    - name: Build enriched incident payload
+      set_fact:
+        enriched_incident:
+          incident_id: "{{ incoming_event.incident_id }}"
+          source_sytem: "Network Automation"
+          event_type: "configuration_change_detected"
+          device_name: "{{ inventory_hostname }}"
+          hostname: "{{ hostname }}"
+          site: "{{ site }}"
+          ci_name: "{{ ci_name }}"
+          event_id: "{{ incoming_event.event_id | default('EVT-' ~ inventory_hostname) }}"
+          severity: "{{ incoming_event.severity | default('major') }}"
+          timestamp: "{{ incoming_event.timestamp | default('unknown') }}"
+          config_path: "{{ playbook_dir }}/../configs/{{ inventory_hostname }}.conf"
+          change_found: "{{ change_found }}"
+          change_number: "{{ matched_change_number }}"
+          change_state: "{{ matched_change_state }}"
+          assignment_group: "{{ expected_assignment_group }}"
+          incident_status: "{{ 'NORMAL' if change_found else 'INVESTIGATE' }}"
+          summary: >-
+            {{
+              'Configuration change correlated with approved change ' ~ matched_change_number if change_found else 'No approved change found for configuration change event'
+            }}
+          
+    - name: write enriched report incident JSON report
       copy:
-        dest: "{{ playbook_dir }}/../reports/{{ inventory_hostname }}_incident_report.txt"
-        content: |
-          Device: {{ inventory_hostname }}
-          Config File: {{ playbook_dir }}/../configs/{{ inventory_hostname }}.conf
-          Change Found: yes
-          Change ID: {{ change_id }}
-          Incident Status: NORMAL
-          Action: incident enriched with active change reference
-      when: change_found
+        dest: "{{ playbook_dir }}/../reports/{{ inventory_hostname }}_incident.json"
+        content: "{{ enriched_incident | to_nice_json }}"
       delegate_to: localhost
-
-    - name: Write Enrichment report when no change is found
+      
+    - name: Build simulated OBM forwarding payload
+      set_fact:
+        obm_forward_payload:
+          event_id: "{{ incoming_event.event_id | default('EVT-UNKNOWN') }}"
+          incident_id: "{{ enriched_incident.incident_id }}"
+          ci_name: "{{ ci_name }}"
+          hostname: "{{ hostname }}"
+          site: "{{ site }}"
+          forwarded_from: "Ansible lab Correlation Workflow"
+          status: "{{ enriched_incident.incident_status }}"
+          change_number: "{{ enriched_incident.change_number }}"
+          message: "{{ enriched_incident.summary }}"
+     
+    - name: Write simulated OBM forward payload
       copy:
-        dest: "{{ playbook_dir }}/../reports/{{ inventory_hostname }}_incident_report.txt"
-        content: |
-          Device: {{ inventory_hostname }}
-          Config File: {{ playbook_dir }}/../configs/{{ inventory_hostname }}.conf
-          Change Found: no
-          Change ID: none 
-          Incident Status: INVESTIGATE 
-          Action: Flag incident for investigation 
-      when: not change_found 
-      delegate_to: localhost 
+        dest: "{{ playbook_dir }}/../forwarded/{{ inventory_hostname }}_obm.json"
+        content: "{{ obm_forward_payload | to_nice_json }}"
+      delegate_to: localhost

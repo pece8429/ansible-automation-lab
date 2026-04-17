@@ -1,0 +1,19 @@
+{
+    "assignment_group": "Network Operations",
+    "change_found": false,
+    "change_number": "",
+    "change_state": "",
+    "ci_name": "router-clt-02",
+    "config_path": "/home/rafa/ansible-lab/playbooks/../configs/CLTR2.conf",
+    "device_name": "CLTR2",
+    "event_id": "EVT10021",
+    "event_type": "configuration_change_detected",
+    "hostname": "CLTR2",
+    "incident_id": "INC20021",
+    "incident_status": "INVESTIGATE",
+    "severity": "major",
+    "site": "CLT",
+    "source_sytem": "Network Automation",
+    "summary": "No approved change found for configuration change event",
+    "timestamp": "2026-04-16T15:00:00Z"
+}

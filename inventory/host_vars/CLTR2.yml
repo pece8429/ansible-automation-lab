@@ -1,4 +1,14 @@
 hostname: CLTR2
+site: CLT
+ci_name: router-clt-02
+expected_assignment_group: Network Operations
+
+incoming_event:
+  event_id: "EVT10021"
+  incident_id: "INC20021"
+  severity: "major"
+  timestamp: "2026-04-16T15:00:00Z"
+
 loopback_ip: 10.0.0.2/32
 
 interfaces:

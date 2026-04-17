@@ -1,0 +1,11 @@
+{
+    "change_number": "",
+    "ci_name": "router-clt-02",
+    "event_id": "EVT10021",
+    "forwarded_from": "Ansible lab Correlation Workflow",
+    "hostname": "CLTR2",
+    "incident_id": "INC20021",
+    "message": "No approved change found for configuration change event",
+    "site": "CLT",
+    "status": "INVESTIGATE"
+}

@@ -1,0 +1,33 @@
+{
+  "result": [
+    {
+      "number": "CHG0001234",
+      "state": "Implement",
+      "active": "true",
+      "cmdb_ci":  {
+        "display_value": "router-atl-01"
+      },
+      "assigment_group": {
+        "display_value": "Network Operations"
+      },
+      "short_description": "Approved network maintenance for ATL router",
+      "start_date": "2026-04-16 01:00:00",
+      "end_date": "2026-04-16 04:00:00"
+    },
+    {
+      "number": "CHG0005678",
+      "state": "Scheduled",
+      "active": "true",
+      "cmdb_ci": {
+        "display_value": "router-dal-01"
+      },
+      "assignment_group": {
+        "display_value": "Network Operations"
+      },
+      "short_description": "Dallas router maintenance",
+      "start_date": "2026-04-16 02:00:00",
+      "end_date": "2026-04-16 05:00:00"
+    }
+  ]
+}
+

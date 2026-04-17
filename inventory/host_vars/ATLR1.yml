@@ -1,4 +1,14 @@
 hostname: ATLR1
+site: ATL
+ci_name: router-atl-01
+expected_assignment_group: Network Operations
+
+incoming_event:
+  event_id: "EVT10011"
+  incident_id: "INC20011"
+  severity: "major"
+  timestamp: "2026-04-16T15:00:00Z"
+
 loopback_ip: 10.0.0.1/32
 
 interfaces:
