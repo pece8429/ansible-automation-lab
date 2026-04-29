@@ -4,7 +4,7 @@
     "change_number": "",
     "change_state": "",
     "ci_name": "router-clt-02",
-    "config_path": "/home/rafa/ansible-lab/playbooks/../configs/CLTR2.conf",
+    "config_path": "/home/david/ansible-automation-lab/playbooks/../configs/CLTR2.conf",
     "device_name": "CLTR2",
     "event_id": "EVT10021",
     "event_type": "configuration_change_detected",

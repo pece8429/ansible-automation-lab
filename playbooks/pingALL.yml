@@ -1,1 +1,7 @@
-ansible all -i inventory/hosts.ini -m ping
+- name: Ping all routers
+  hosts: routers
+  gather_facts: false
+
+  tasks:
+    - name: Test connectivity
+      ansible.builtin.ping:

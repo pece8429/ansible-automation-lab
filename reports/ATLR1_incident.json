@@ -4,7 +4,7 @@
     "change_number": "CHG0001234",
     "change_state": "Implement",
     "ci_name": "router-atl-01",
-    "config_path": "/home/rafa/ansible-lab/playbooks/../configs/ATLR1.conf",
+    "config_path": "/home/david/ansible-automation-lab/playbooks/../configs/ATLR1.conf",
     "device_name": "ATLR1",
     "event_id": "EVT10011",
     "event_type": "configuration_change_detected",
