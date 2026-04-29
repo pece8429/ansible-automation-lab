@@ -1,7 +1,1 @@
-*.retry
-_pycache__/
-*.pyc
-.env
-.venv
-configs/
-backups/
+venv/
